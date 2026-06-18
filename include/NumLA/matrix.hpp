@@ -2,6 +2,8 @@
 #include <array>
 #include <iostream>
 #include <type_traits>
+#include <initializer_list>
+#include <cassert>
 
 namespace NumLA {
 
@@ -19,15 +21,33 @@ namespace NumLA {
             // Default constructor (initializes to zeros)
             Matrix() = default;
 
-            // Constructor with initialization list
-            Matrix(const std::array<T, Rows * Cols>& data) : m_data(data) {}
+            // // Constructor with initialization list
+            // Matrix(const std::array<T, Rows * Cols>& data) : m_data(data) {}
+
+            // Initializer List Constructor: Allows nested brace initialization {{1, 2}, {3, 4}}
+            Matrix(std::initializer_list<std::initializer_list<T>> list) {
+                assert(list.size() == Rows && "Initializer list row count mismatch.");
+                
+                std::size_t row = 0;
+                for (const auto& row_list : list) {
+                    assert(row_list.size() == Cols && "Initializer list column count mismatch.");
+                    std::size_t col = 0;
+                    for (const auto& val : row_list) {
+                        (*this)(row, col) = val;
+                        ++col;
+                    }
+                    ++row;
+                }
+            }
 
             // Element access (Row-major indexing: row * Cols + col)
             T& operator()(std::size_t row, std::size_t col) {
+                assert(row < Rows && col < Cols && "Matrix index out of bounds.");
                 return m_data[row * Cols + col];
             }
 
             const T& operator()(std::size_t row, std::size_t col) const {
+                assert(row < Rows && col < Cols && "Matrix index out of bounds.");
                 return m_data[row * Cols + col];
             }
 
