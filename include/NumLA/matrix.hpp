@@ -53,6 +53,36 @@ namespace NumLA {
 
             constexpr std::size_t rows() const { return Rows; }
             constexpr std::size_t cols() const { return Cols; }
+
+            static constexpr Matrix Identity() {
+                static_assert(Rows == Cols, "Identity matrix must be square (Rows must equal Cols).");
+                
+                Matrix result;
+                for (std::size_t i = 0; i < Rows; ++i) {
+                    result(i, i) = static_cast<T>(1);
+                }
+                return result;
+            }
+
+            // Vector Type Alias
+            template <typename T, std::size_t Dim>
+            using Vector = Matrix<T, Dim, 1>;
+
+            // Matrix Multiplication
+            template <typename T, std::size_t R1, std::size_t C1, std::size_t C2>
+            Matrix<T, R1, C2> operator*(const Matrix<T, R1, C1>& lhs, const Matrix<T, C1, C2>& rhs) {
+                Matrix<T, R1, C2> result; // Zero-initialized by default
+
+                for (std::size_t i = 0; i < R1; ++i) {
+                    for (std::size_t k = 0; k < C1; ++k) {
+                        T factor = lhs(i, k);
+                        for (std::size_t j = 0; j < C2; ++j) {
+                            result(i, j) += factor * rhs(k, j);
+                        }
+                    }
+                }
+                return result;
+            }
     };
 
 }
