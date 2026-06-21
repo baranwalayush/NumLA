@@ -34,9 +34,17 @@ int main() {
     C(0, 1) = 42.0;
     std::cout << "Modified Result C (after changing C(0, 1) to 42.0):\n" << C << "\n";
 
-    // Initialize a vector
-    NumLA::Vector<double, 3> v = {{1.0}, {2.0}, {3.0}};
-    std::cout << "Vector v:\n" << v << "\n";
+    // Initialize a Row vector
+    NumLA::RowVector<double, 3> v1 = {{4.0, 5.0, 6.0}};
+    std::cout << "Row Vector v1:\n" << v1 << "\n";
+
+    // Initialize a Column vector
+    NumLA::ColVector<double, 3> v2 = {{1.0}, {2.0}, {3.0}};
+    std::cout << "Column Vector v2:\n" << v2 << "\n";
+
+    // Multiply Row vector by Column vector (Result will be a 1x1 Matrix)
+    auto dot_product = v1 * v2;
+    std::cout << "Dot Product (v1 * v2):\n" << dot_product << "\n";
 
     return 0;
 }

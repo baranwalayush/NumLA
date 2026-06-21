@@ -65,9 +65,14 @@ namespace NumLA {
             }
     };
 
-    // Vector Type Alias
+    // Vector Type Aliases
+    // Column vector: Dim rows, 1 column (dim*1)
     template <typename T, std::size_t Dim>
-    using Vector = Matrix<T, Dim, 1>;
+    using ColVector = Matrix<T, Dim, 1>;
+
+    // Row vector: 1 row, Dim columns (1*dim)
+    template <typename T, std::size_t Dim>
+    using RowVector = Matrix<T, 1, Dim>;
 
     // Matrix Multiplication
     template <typename T, std::size_t R1, std::size_t C1, std::size_t C2>
