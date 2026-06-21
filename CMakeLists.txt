@@ -14,3 +14,7 @@ target_include_directories(NumLA INTERFACE
 # Add Unit Test Executable
 add_executable(run_tests tests/test_matrix.cpp)
 target_link_libraries(run_tests PRIVATE NumLA)
+
+# Add Example Executable
+add_executable(matrix_example examples/matrix_example.cpp)
+target_link_libraries(matrix_example PRIVATE NumLA)
