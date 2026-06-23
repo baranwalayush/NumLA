@@ -13,21 +13,21 @@ target_include_directories(NumLA INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
-# Add Unit Test Executable
-add_executable(run_tests tests/test_matrix.cpp)
-target_link_libraries(run_tests PRIVATE NumLA)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    # Add Unit Test Executable
+    add_executable(run_tests tests/test_matrix.cpp)
+    target_link_libraries(run_tests PRIVATE NumLA)
 
-# Add Example Executable
-add_executable(matrix_example examples/matrix_example.cpp)
-target_link_libraries(matrix_example PRIVATE NumLA)
+    # Add Example Executable
+    add_executable(matrix_example examples/matrix_example.cpp)
+    target_link_libraries(matrix_example PRIVATE NumLA)
+endif()
 
 # Install the library
 include(GNUInstallDirs)
 install(TARGETS NumLA
     EXPORT NumLATargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(
