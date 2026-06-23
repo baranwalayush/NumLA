@@ -13,7 +13,7 @@ NumLA is a scientific computing library designed to be easy-to-use and highly op
 ### Using NumLA in your project
 The recommended way to use NumLA is to add it as a dependency using CMake's `FetchContent` module. This will download and configure NumLA automatically.
 
-1.  **Update your `CMakeLists.txt`:**
+1.  **Create your `CMakeLists.txt`:**
 
    Add the following to your `CMakeLists.txt` file:
 
@@ -63,3 +63,10 @@ The recommended way to use NumLA is to add it as a dependency using CMake's `Fet
    ./my_program
    ```
 
+The directory structure will look like this
+
+    my_project/
+    ├── build/
+    ├── CMakeLists.txt    
+    └── main.cpp             
+    
