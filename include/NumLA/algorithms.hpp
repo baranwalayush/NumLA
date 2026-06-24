@@ -10,6 +10,10 @@ namespace NumLA {
     /**
      * Solves the linear system Ax = b using Gaussian Elimination with Partial Pivoting.
      * Takes A and b by value to keep original data intact.
+     * @param A Coefficient matrix (Dim x Dim)
+     * @param b Right-hand side vector (Dim x 1)
+     * @return Solution vector x (Dim x 1)
+     * @throws std::runtime_error if the matrix is singular or near-singular
      */
     template <typename T, std::size_t Dim>
     ColVector<T, Dim> solve_gaussian(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
