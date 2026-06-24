@@ -20,7 +20,9 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
     # Add Example Executable
     add_executable(matrix_example examples/matrix_example.cpp)
+    add_executable(algorithms_example examples/algorithms_example.cpp)
     target_link_libraries(matrix_example PRIVATE NumLA)
+    target_link_libraries(algorithms_example PRIVATE NumLA)
 endif()
 
 # Install the library
