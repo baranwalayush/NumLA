@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Define header-only library target
 add_library(NumLA INTERFACE)
-add_library(NumLA::NumLA ALIAS NumLA) # Add alias for modern CMake usage
+add_library(NumLA::NumLA ALIAS NumLA) 
 target_include_directories(NumLA INTERFACE 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
@@ -15,14 +15,24 @@ target_include_directories(NumLA INTERFACE
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     # Add Unit Test Executable
-    add_executable(run_tests tests/test_matrix.cpp)
+    add_executable(run_tests 
+            tests/main.cpp
+            tests/test_matrix.cpp
+            tests/test_gaussianElimination.cpp)
     target_link_libraries(run_tests PRIVATE NumLA)
 
     # Add Example Executable
-    add_executable(matrix_example examples/matrix_example.cpp)
-    add_executable(algorithms_example examples/algorithms_example.cpp)
-    target_link_libraries(matrix_example PRIVATE NumLA)
-    target_link_libraries(algorithms_example PRIVATE NumLA)
+    file(GLOB EXAMPLE_SOURCES "examples/*.cpp")
+    foreach(source_file ${EXAMPLE_SOURCES})
+
+        get_filename_component(example_name ${source_file} NAME_WE)
+        
+        add_executable(${example_name} ${source_file})
+
+        target_link_libraries(${example_name} PRIVATE NumLA)
+
+    endforeach()
+
 endif()
 
 # Install the library
