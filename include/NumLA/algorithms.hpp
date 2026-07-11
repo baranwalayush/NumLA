@@ -9,7 +9,7 @@ namespace NumLA {
 
     /**
      * Performs Gaussian elimination with partial pivoting on the system Ax = b.
-     * This function modifies A and b in place to produce an upper triangular matrix.
+     * Partial pivoting is used to enhance numerical stability by swapping rows to ensure the pivot element is the largest in its column.
      * @param A Coefficient matrix (Dim x Dim)
      * @param b Right-hand side vector (Dim x 1)
      * @return A pair containing the modified upper triangular matrix A and the modified vector b
@@ -57,7 +57,8 @@ namespace NumLA {
     }
 
     /**
-     * Performs Gaussian elimination on a square matrix A and returns the upper triangular form.
+     * Performs Gaussian elimination with partial pivoting on a square matrix A and returns the upper triangular form.
+     * Partial pivoting is used to enhance numerical stability by swapping rows to ensure the pivot element is the largest in its column.
      * @param A Coefficient matrix (Dim x Dim)
      * @return Upper triangular matrix after Gaussian elimination
      * @throws std::runtime_error if the matrix is singular or near-singular
@@ -74,6 +75,7 @@ namespace NumLA {
 
     /**
      * Solves the linear system Ax = b using Gaussian Elimination with Partial Pivoting.
+     * Partial pivoting is used to enhance numerical stability by swapping rows to ensure the pivot element is the largest in its column.
      * Takes A and b by value to keep original data intact.
      * @param A Coefficient matrix (Dim x Dim)
      * @param b Right-hand side vector (Dim x 1)
