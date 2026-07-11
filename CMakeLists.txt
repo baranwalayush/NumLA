@@ -18,7 +18,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     add_executable(run_tests 
             tests/main.cpp
             tests/test_matrix.cpp
-            tests/test_gaussianElimination.cpp)
+            tests/test_algorithms.cpp)
     target_link_libraries(run_tests PRIVATE NumLA)
 
     # Add Example Executable

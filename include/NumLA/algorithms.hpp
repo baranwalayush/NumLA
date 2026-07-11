@@ -102,4 +102,31 @@ namespace NumLA {
         return x;
     }
 
+    template <typename T, std::size_t Dim>
+    ColVector<T, Dim> solve_gauss_jordan(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
+
+        // Perform Gaussian elimination with partial pivoting
+        std::tie(A, b) = perform_gaussian_elimination(A, b);
+
+        // Perform Gauss-Jordan elimination to reduce A to the identity matrix
+        for (std::size_t i = 0; i < Dim; ++i) {
+            // Normalize the pivot row
+            T pivot = A(i, i);
+            for (std::size_t j = 0; j < Dim; ++j) {
+                A(i, j) /= pivot;
+            }
+            b(i, 0) /= pivot;
+
+            // Eliminate all other entries in the current column
+            for (std::size_t r = 0; r < i; ++r) {
+                T factor = A(r, i);
+                for (std::size_t c = i; c < Dim; ++c) {
+                    A(r, c) -= factor * A(i, c);
+                }
+                b(r, 0) -= factor * b(i, 0);
+            }
+        }
+
+        return b; // Now b contains the solution vector x
+    }
 }
