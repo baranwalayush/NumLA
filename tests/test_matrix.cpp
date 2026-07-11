@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "NumLA/matrix.hpp"
 
-TEST_CASE("Matrix Core Functionality", "[Matrix]") {
+TEST_CASE("Matrix Core Functionality", "[matrix][core][unit]") {
     
     SECTION("Default constructor initializes elements to zero") {
         NumLA::Matrix<double, 2, 2> mat;
@@ -35,7 +35,7 @@ TEST_CASE("Matrix Core Functionality", "[Matrix]") {
     }
 }
 
-TEST_CASE("Matrix Mathematical Operators", "[Matrix][Math]") {
+TEST_CASE("Matrix Mathematical Operators", "[matrix][math][unit]") {
 
     SECTION("Matrix multiplication produces correct analytical results") {
         NumLA::Matrix<double, 2, 3> A = {{
