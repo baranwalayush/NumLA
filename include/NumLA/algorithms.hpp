@@ -8,20 +8,20 @@
 namespace NumLA {
 
     /**
-     * Solves the linear system Ax = b using Gaussian Elimination with Partial Pivoting.
-     * Takes A and b by value to keep original data intact.
+     * Performs Gaussian elimination with partial pivoting on the system Ax = b.
+     * This function modifies A and b in place to produce an upper triangular matrix.
      * @param A Coefficient matrix (Dim x Dim)
      * @param b Right-hand side vector (Dim x 1)
-     * @return Solution vector x (Dim x 1)
+     * @return A pair containing the modified upper triangular matrix A and the modified vector b
      * @throws std::runtime_error if the matrix is singular or near-singular
      */
-    template <typename T, std::size_t Dim>
-    ColVector<T, Dim> solve_gaussian(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
-        
-        // Forward Elimination (Transforming A into Upper Triangular form)
+    template<typename T, std::size_t Dim>
+    std::pair<Matrix<T, Dim, Dim>, ColVector<T, Dim>> perform_gaussian_elimination(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
+
+        // Forward Elimination 
         for (std::size_t i = 0; i < Dim; ++i) {
             
-            // --- PARTIAL PIVOTING ---
+            // PARTIAL PIVOTING 
             // Find the row with the largest absolute value in the current column
             std::size_t max_row = i;
             for (std::size_t r = i + 1; r < Dim; ++r) {
@@ -53,7 +53,39 @@ namespace NumLA {
             }
         }
 
-        // Back Substitution (Solving for the solution vector x)
+        return std::make_pair(A, b);
+    }
+
+    /**
+     * Performs Gaussian elimination on a square matrix A and returns the upper triangular form.
+     * @param A Coefficient matrix (Dim x Dim)
+     * @return Upper triangular matrix after Gaussian elimination
+     * @throws std::runtime_error if the matrix is singular or near-singular
+     */
+    template <typename T, std::size_t Dim>
+    Matrix<T, Dim, Dim> perform_gaussian_elimination(Matrix<T, Dim, Dim> A) {
+
+        ColVector<T, Dim> b; // Placeholder for the right-hand side vector
+
+        std::tie(A, b) = perform_gaussian_elimination(A, b);
+
+        return A;
+    }
+
+    /**
+     * Solves the linear system Ax = b using Gaussian Elimination with Partial Pivoting.
+     * Takes A and b by value to keep original data intact.
+     * @param A Coefficient matrix (Dim x Dim)
+     * @param b Right-hand side vector (Dim x 1)
+     * @return Solution vector x (Dim x 1)
+     * @throws std::runtime_error if the matrix is singular or near-singular
+     */
+    template <typename T, std::size_t Dim>
+    ColVector<T, Dim> solve_gaussian(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
+        
+        std::tie(A, b) = perform_gaussian_elimination(A, b);
+
+        // Back Substitution 
         ColVector<T, Dim> x; // Result vector initialized to 0
         
         // Loop backwards from the last row to the first
