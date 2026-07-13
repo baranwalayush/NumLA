@@ -12,7 +12,7 @@ namespace NumLA {
      * Partial pivoting is used to enhance numerical stability by swapping rows to ensure the pivot element is the largest in its column.
      * @param A Coefficient matrix (Dim x Dim)
      * @param b Right-hand side vector (Dim x 1)
-     * @return A pair containing the modified upper triangular matrix A and the modified vector b
+     * @return A pair containing the row echelon form of A (or the upper triangular matrix) and the modified right-hand side vector b after elimination
      * @throws std::runtime_error if the matrix is singular or near-singular
      */
     template<typename T, std::size_t Dim>
@@ -60,7 +60,7 @@ namespace NumLA {
      * Performs Gaussian elimination with partial pivoting on a square matrix A and returns the upper triangular form.
      * Partial pivoting is used to enhance numerical stability by swapping rows to ensure the pivot element is the largest in its column.
      * @param A Coefficient matrix (Dim x Dim)
-     * @return Upper triangular matrix after Gaussian elimination
+     * @return Row echelon form of A (or the upper triangular matrix) after Gaussian elimination
      * @throws std::runtime_error if the matrix is singular or near-singular
      */
     template <typename T, std::size_t Dim>
