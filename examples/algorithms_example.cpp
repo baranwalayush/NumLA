@@ -89,6 +89,29 @@ int main() {
         std::cerr << "Error: " << e.what() << "\n";
     }
 
+    std::cout << "----------------------------------------\n\n";
+
+    // Example 4: Find inverse of a matrix using Gauss-Jordan elimination
+
+    NumLA::Matrix<double, 2, 2> A3 = {{
+        {4.0, 7.0},
+        {2.0, 6.0}
+    }};
+
+    std::cout << "Finding inverse of matrix A using Gauss-Jordan elimination...\n";
+    std::cout << "Matrix A:\n" << A3 << "\n";
+
+    try {
+        auto A_inv = NumLA::gauss_jordan_inverse(A3);
+        std::cout << "Inverse of Matrix A:\n" << A_inv << "\n";
+
+        // Verification: Check if A * x matches original vector b!
+        auto verification = A3 * A_inv;
+        std::cout << "Verification (A * A_inv):\n" << verification << "\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+    }
+
 
     return 0;
 }

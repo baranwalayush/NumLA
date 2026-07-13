@@ -192,4 +192,27 @@ TEST_CASE("Gauss-Jordan solver: computes solution via row-reduction to reduced e
 
         REQUIRE_THROWS_AS(NumLA::solve_gauss_jordan(singular_A, b), std::runtime_error);
     }
+
+    SECTION("Compute the inverse of a non-singular matrix")
+    {
+        NumLA::Matrix<double, 2, 2> A = {{{4.0, 7.0},
+                                          {2.0, 6.0}}};
+
+        auto A_inv = NumLA::gauss_jordan_inverse(A);
+
+        // The expected inverse is:
+        // [ 0.6, -0.7 ]
+        // [-0.2,  0.4 ]
+        REQUIRE(A_inv(0, 0) == Approx(0.6));
+        REQUIRE(A_inv(0, 1) == Approx(-0.7));
+        REQUIRE(A_inv(1, 0) == Approx(-0.2));
+        REQUIRE(A_inv(1, 1) == Approx(0.4));
+
+        // Verify that A * A_inv is the identity matrix
+        auto I = A * A_inv;
+        REQUIRE(I(0, 0) == Approx(1.0));
+        REQUIRE(I(0, 1) == Approx(0.0));
+        REQUIRE(I(1, 0) == Approx(0.0));
+        REQUIRE(I(1, 1) == Approx(1.0));
+    }
 }

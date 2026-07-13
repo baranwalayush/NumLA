@@ -147,4 +147,22 @@ namespace NumLA {
         detail::gauss_jordan_reduce(A, b);
         return b;
     }
+
+    /**
+     * Computes the inverse of a square matrix A using Gauss-Jordan elimination.
+     * The method augments A with the identity matrix and reduces it to reduced row echelon form, resulting in the inverse of A.
+     * @param A Square matrix (Dim x Dim)
+     * @return Inverse of matrix A (Dim x Dim)
+     * @throws std::runtime_error if the matrix is singular or near-singular
+     */
+    template <typename T, std::size_t Dim>
+    Matrix<T, Dim, Dim> gauss_jordan_inverse(Matrix<T, Dim, Dim> A) {
+
+        Matrix<T, Dim, Dim> I = Matrix<T, Dim, Dim>::Identity();
+
+        detail::forward_eliminate(A, I);
+        detail::gauss_jordan_reduce(A, I);
+
+        return I;
+    }
 }
