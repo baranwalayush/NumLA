@@ -2,10 +2,88 @@
 
 #include "matrix.hpp"
 #include <cmath>
+#include <cstddef>
 #include <stdexcept>
 #include <utility>
 
 namespace NumLA {
+
+    namespace detail {
+
+        template <typename T, std::size_t Dim, std::size_t Cols>
+        void forward_eliminate(Matrix<T, Dim, Dim>& A, Matrix<T, Dim, Cols>& B) {
+            for (std::size_t i = 0; i < Dim; ++i) {
+                std::size_t max_row = i;
+                for (std::size_t r = i + 1; r < Dim; ++r) {
+                    if (std::abs(A(r, i)) > std::abs(A(max_row, i))) {
+                        max_row = r;
+                    }
+                }
+
+                if (max_row != i) {
+                    for (std::size_t c = 0; c < Dim; ++c) {
+                        std::swap(A(i, c), A(max_row, c));
+                    }
+                    for (std::size_t c = 0; c < Cols; ++c) {
+                        std::swap(B(i, c), B(max_row, c));
+                    }
+                }
+
+                if (std::abs(A(i, i)) < 1e-12) {
+                    throw std::runtime_error("Matrix is singular or near-singular. Cannot solve.");
+                }
+
+                for (std::size_t r = i + 1; r < Dim; ++r) {
+                    const T factor = A(r, i) / A(i, i);
+                    for (std::size_t c = i; c < Dim; ++c) {
+                        A(r, c) -= factor * A(i, c);
+                    }
+                    for (std::size_t c = 0; c < Cols; ++c) {
+                        B(r, c) -= factor * B(i, c);
+                    }
+                }
+            }
+        }
+
+        template <typename T, std::size_t Dim>
+        ColVector<T, Dim> back_substitute(const Matrix<T, Dim, Dim>& A, const ColVector<T, Dim>& b) {
+            ColVector<T, Dim> x;
+
+            for (int i = static_cast<int>(Dim) - 1; i >= 0; --i) {
+                T sum = 0;
+                for (std::size_t j = static_cast<std::size_t>(i) + 1; j < Dim; ++j) {
+                    sum += A(static_cast<std::size_t>(i), j) * x(j, 0);
+                }
+                x(static_cast<std::size_t>(i), 0) = (b(static_cast<std::size_t>(i), 0) - sum) / A(static_cast<std::size_t>(i), i);
+            }
+
+            return x;
+        }
+
+        template <typename T, std::size_t Dim, std::size_t Cols>
+        void gauss_jordan_reduce(Matrix<T, Dim, Dim>& A, Matrix<T, Dim, Cols>& B) {
+            for (int i = static_cast<int>(Dim) - 1; i >= 0; --i) {
+                const T pivot = A(i, i);
+                for (std::size_t j = 0; j < Dim; ++j) {
+                    A(i, j) /= pivot;
+                }
+                for (std::size_t j = 0; j < Cols; ++j) {
+                    B(i, j) /= pivot;
+                }
+
+                for (int r = i-1; r >= 0; --r) {
+                    const T factor = A(r, i);
+                    for (std::size_t c = i; c < Dim; ++c) {
+                        A(r, c) -= factor * A(i, c);
+                    }
+                    for (std::size_t c = 0; c < Cols; ++c) {
+                        B(r, c) -= factor * B(i, c);
+                    }
+                }
+            }
+        }
+
+    }
 
     /**
      * Performs Gaussian elimination with partial pivoting on the system Ax = b.
@@ -17,41 +95,7 @@ namespace NumLA {
      */
     template<typename T, std::size_t Dim>
     std::pair<Matrix<T, Dim, Dim>, ColVector<T, Dim>> perform_gaussian_elimination(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
-
-        // Forward Elimination 
-        for (std::size_t i = 0; i < Dim; ++i) {
-            
-            // PARTIAL PIVOTING 
-            // Find the row with the largest absolute value in the current column
-            std::size_t max_row = i;
-            for (std::size_t r = i + 1; r < Dim; ++r) {
-                if (std::abs(A(r, i)) > std::abs(A(max_row, i))) {
-                    max_row = r;
-                }
-            }
-            
-            // If the rows are different, swap them in both Matrix A and Vector b
-            if (max_row != i) {
-                for (std::size_t c = 0; c < Dim; ++c) {
-                    std::swap(A(i, c), A(max_row, c));
-                }
-                std::swap(b(i, 0), b(max_row, 0));
-            }
-            
-            // Check if the matrix is singular (or close to it)
-            if (std::abs(A(i, i)) < 1e-12) {
-                throw std::runtime_error("Matrix is singular or near-singular. Cannot solve.");
-            }
-            
-            // Eliminate the entries below the pivot
-            for (std::size_t r = i + 1; r < Dim; ++r) {
-                T factor = A(r, i) / A(i, i);
-                for (std::size_t c = i; c < Dim; ++c) {
-                    A(r, c) -= factor * A(i, c);
-                }
-                b(r, 0) -= factor * b(i, 0);
-            }
-        }
+        detail::forward_eliminate(A, b);
 
         return std::make_pair(A, b);
     }
@@ -68,7 +112,7 @@ namespace NumLA {
 
         ColVector<T, Dim> b; // Placeholder for the right-hand side vector
 
-        std::tie(A, b) = perform_gaussian_elimination(A, b);
+        detail::forward_eliminate(A, b);
 
         return A;
     }
@@ -84,49 +128,23 @@ namespace NumLA {
      */
     template <typename T, std::size_t Dim>
     ColVector<T, Dim> solve_gaussian(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
-        
-        std::tie(A, b) = perform_gaussian_elimination(A, b);
-
-        // Back Substitution 
-        ColVector<T, Dim> x; // Result vector initialized to 0
-        
-        // Loop backwards from the last row to the first
-        for (int i = static_cast<int>(Dim) - 1; i >= 0; --i) {
-            T sum = 0;
-            for (std::size_t j = i + 1; j < Dim; ++j) {
-                sum += A(i, j) * x(j, 0);
-            }
-            x(i, 0) = (b(i, 0) - sum) / A(i, i);
-        }
-
-        return x;
+        detail::forward_eliminate(A, b);
+        return detail::back_substitute(A, b);
     }
 
+    /**
+     * Solves the linear system Ax = b using Gauss-Jordan Elimination.
+     * This method reduces the augmented matrix [A|b] to reduced row echelon form, allowing direct extraction of the solution vector x.
+     * @param A Coefficient matrix (Dim x Dim)
+     * @param b Right-hand side vector (Dim x 1)
+     * @return Solution vector x (Dim x 1)
+     * @throws std::runtime_error if the matrix is singular or near-singular
+     */
     template <typename T, std::size_t Dim>
     ColVector<T, Dim> solve_gauss_jordan(Matrix<T, Dim, Dim> A, ColVector<T, Dim> b) {
 
-        // Perform Gaussian elimination with partial pivoting
-        std::tie(A, b) = perform_gaussian_elimination(A, b);
-
-        // Perform Gauss-Jordan elimination to reduce A to the identity matrix
-        for (std::size_t i = 0; i < Dim; ++i) {
-            // Normalize the pivot row
-            T pivot = A(i, i);
-            for (std::size_t j = 0; j < Dim; ++j) {
-                A(i, j) /= pivot;
-            }
-            b(i, 0) /= pivot;
-
-            // Eliminate all other entries in the current column
-            for (std::size_t r = 0; r < i; ++r) {
-                T factor = A(r, i);
-                for (std::size_t c = i; c < Dim; ++c) {
-                    A(r, c) -= factor * A(i, c);
-                }
-                b(r, 0) -= factor * b(i, 0);
-            }
-        }
-
-        return b; // Now b contains the solution vector x
+        detail::forward_eliminate(A, b);
+        detail::gauss_jordan_reduce(A, b);
+        return b;
     }
 }
