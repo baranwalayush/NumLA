@@ -112,6 +112,32 @@ int main() {
         std::cerr << "Error: " << e.what() << "\n";
     }
 
+    std::cout << "----------------------------------------\n\n";
+
+    // Example 5: Find the LU decomposition of a matrix
+
+    NumLA::Matrix<double, 3, 3> A4 = {{
+        { -20.0,  1.0, -1.0},
+        { 3.0, -1.0,  2.0},
+        {-2.0,  1.0,  2.0}
+    }};
+
+    std::cout << "Finding LU decomposition of matrix A...\n";
+    std::cout << "Matrix A:\n" << A4 << "\n";
+
+    try {
+        auto [L, U] = NumLA::lu_decomposition(A4);
+        std::cout << "Lower Triangular Matrix L:\n" << L << "\n";
+        std::cout << "Upper Triangular Matrix U:\n" << U << "\n";
+
+        // Verification: Check if L * U matches original matrix A!
+        auto verification = L * U;
+        std::cout << "Verification (L * U):\n" << verification << "\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+    }
+    
+
 
     return 0;
 }

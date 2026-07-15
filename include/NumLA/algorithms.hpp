@@ -165,4 +165,39 @@ namespace NumLA {
 
         return I;
     }
+
+    /**
+     * Performs LU decomposition of a square matrix A into lower triangular matrix L and upper triangular matrix U.
+     * The decomposition is done using Doolittle's method, where L is a lower triangular matrix with unit diagonal elements and U is an upper triangular matrix.
+     * This function does not perform pivoting
+     * @param A Square matrix (Dim x Dim) to be decomposed
+     * @return A pair containing the lower triangular matrix L and the upper triangular matrix U
+     * @throws std::runtime_error if the matrix is singular or near-singular
+     */
+    template <typename T, std::size_t Dim>
+    std::pair<Matrix<T, Dim, Dim>, Matrix<T, Dim, Dim>> lu_decomposition(Matrix<T, Dim, Dim> A) {
+        Matrix<T, Dim, Dim> L; // Lower triangular matrix
+        Matrix<T, Dim, Dim> U; // Upper triangular matrix
+
+        for (std::size_t i = 0; i < Dim; ++i) {
+            for (std::size_t j = i; j < Dim; ++j) {
+                T sum = 0;
+                for (std::size_t k = 0; k < i; ++k) {
+                    sum += L(i, k) * U(k, j);
+                }
+                U(i, j) = A(i, j) - sum;
+            }
+
+            for (std::size_t j = i + 1; j < Dim; ++j) {
+                T sum = 0;
+                for (std::size_t k = 0; k < i; ++k) {
+                    sum += L(j, k) * U(k, i);
+                }
+                L(j, i) = (A(j, i) - sum) / U(i, i);
+            }
+            L(i, i) = 1; // Diagonal elements of L are 1
+        }
+
+        return std::make_pair(L, U);
+    }
 }
