@@ -23,6 +23,14 @@ int main() {
     std::cout << "Matrix A:\n" << A << "\n";
     std::cout << "Matrix B:\n" << B << "\n";
 
+    // Adding two matrices of the same size (A + A)
+    auto sum = A + A; // Adding A to itself
+    std::cout << "Sum of A + A:\n" << sum << "\n";
+
+    // Subtracting two matrices of the same size (A - A)
+    auto diff = A - A; // Subtracting A from itself
+    std::cout << "Difference of A - A:\n" << diff << "\n";
+
     // Multiply them (Result will be 2x2)
     auto C = A * B;
     std::cout << "Result C (A * B):\n" << C << "\n";
