@@ -76,4 +76,49 @@ TEST_CASE("Matrix Mathematical Operators", "[matrix][math][unit]") {
         REQUIRE(result(1, 0) == 0.0);
         REQUIRE(result(1, 1) == 4.8);
     }
+
+    SECTION("Matrix addition and subtraction produce correct results") {
+        NumLA::Matrix<double, 2, 2> A = {{
+            {1.0, 2.0},
+            {3.0, 4.0}
+        }};
+        NumLA::Matrix<double, 2, 2> B = {{
+            {5.0, 6.0},
+            {7.0, 8.0}
+        }};
+
+        auto sum = A + B;
+        auto diff = A - B;
+
+        REQUIRE(sum(0, 0) == 6.0);
+        REQUIRE(sum(0, 1) == 8.0);
+        REQUIRE(sum(1, 0) == 10.0);
+        REQUIRE(sum(1, 1) == 12.0);
+
+        REQUIRE(diff(0, 0) == -4.0);
+        REQUIRE(diff(0, 1) == -4.0);
+        REQUIRE(diff(1, 0) == -4.0);
+        REQUIRE(diff(1, 1) == -4.0);
+    }
+
+    SECTION("Matrix multiplication with incompatible dimensions should not compile") {
+        // This section is more of a compile-time check. 
+        // Uncommenting the following lines should result in a compilation error due to dimension mismatch.
+        /*
+        NumLA::Matrix<double, 2, 3> A;
+        NumLA::Matrix<double, 4, 2> B;
+        auto C = A * B; // Should not compile
+        */
+    }
+
+    SECTION("Matrix addition and subtraction with incompatible dimensions should not compile") {
+        // This section is more of a compile-time check. 
+        // Uncommenting the following lines should result in a compilation error due to dimension mismatch.
+        /*
+        NumLA::Matrix<double, 2, 3> A;
+        NumLA::Matrix<double, 3, 2> B;
+        auto sum = A + B; // Should not compile
+        auto diff = A - B; // Should not compile
+        */
+    }
 }

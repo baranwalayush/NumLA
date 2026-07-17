@@ -103,4 +103,28 @@ namespace NumLA {
         return os;
     }
 
+    // Matrix Addition
+    template <typename T, std::size_t Rows, std::size_t Cols>
+    Matrix<T, Rows, Cols> operator+(const Matrix<T, Rows, Cols>& lhs, const Matrix<T, Rows, Cols>& rhs) {
+        Matrix<T, Rows, Cols> result;
+        for (std::size_t i = 0; i < Rows; ++i) {
+            for (std::size_t j = 0; j < Cols; ++j) {
+                result(i, j) = lhs(i, j) + rhs(i, j);
+            }
+        }
+        return result;
+    }
+
+    // Matrix Subtraction
+    template <typename T, std::size_t Rows, std::size_t Cols>
+    Matrix<T, Rows, Cols> operator-(const Matrix<T, Rows, Cols>& lhs, const Matrix<T, Rows, Cols>& rhs) {
+        Matrix<T, Rows, Cols> result;
+        for (std::size_t i = 0; i < Rows; ++i) {
+            for (std::size_t j = 0; j < Cols; ++j) {
+                result(i, j) = lhs(i, j) - rhs(i, j);
+            }
+        }
+        return result;
+    }
+
 }
