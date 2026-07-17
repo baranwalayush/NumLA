@@ -216,3 +216,32 @@ TEST_CASE("Gauss-Jordan solver: computes solution via row-reduction to reduced e
         REQUIRE(I(1, 1) == Approx(1.0));
     }
 }
+
+TEST_CASE("LU Decomposition: Doolittle Algorithm", "[algorithms][lu_decomposition][doolittle][unit][integration]") 
+{
+    SECTION("Perform LU decomposition on a 3x3 non-singular matrix")
+    {
+        NumLA::Matrix<double, 3, 3> A = {{{4.0, 3.0, 2.0},
+                                          {2.0, 1.0, 1.0},
+                                          {6.0, 5.0, 4.0}}};
+
+        auto [L, U] = NumLA::lu_decomposition(A);
+
+        // Verify that L is lower triangular and U is upper triangular
+        REQUIRE(L(1, 0) != Approx(0.0));
+        REQUIRE(L(2, 0) != Approx(0.0));
+        REQUIRE(L(2, 1) != Approx(0.0));
+
+        REQUIRE(U(1, 0) == Approx(0.0));
+        REQUIRE(U(2, 0) == Approx(0.0));
+        REQUIRE(U(2, 1) == Approx(0.0));
+
+        // Verify that L * U equals the original matrix A
+        auto A_reconstructed = L * U;
+        for (std::size_t i = 0; i < 3; ++i) {
+            for (std::size_t j = 0; j < 3; ++j) {
+                REQUIRE(A_reconstructed(i, j) == Approx(A(i, j)));
+            }
+        }
+    }
+}
