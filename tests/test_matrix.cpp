@@ -121,4 +121,25 @@ TEST_CASE("Matrix Mathematical Operators", "[matrix][math][unit]") {
         auto diff = A - B; // Should not compile
         */
     }
+
+    SECTION("Matrix Scalar multiplication produces correct results") {
+        NumLA::Matrix<double, 2, 2> A = {{
+            {1.0, -2.0},
+            {3.0, 4.0}
+        }};
+        double scalar = 3.0;
+
+        auto scaled_A1 = scalar * A;
+        auto scaled_A2 = A * scalar;
+
+        REQUIRE(scaled_A1(0, 0) == 3.0);
+        REQUIRE(scaled_A1(0, 1) == -6.0);
+        REQUIRE(scaled_A1(1, 0) == 9.0);
+        REQUIRE(scaled_A1(1, 1) == 12.0);
+
+        REQUIRE(scaled_A2(0, 0) == 3.0);
+        REQUIRE(scaled_A2(0, 1) == -6.0);
+        REQUIRE(scaled_A2(1, 0) == 9.0);
+        REQUIRE(scaled_A2(1, 1) == 12.0);
+    }
 }

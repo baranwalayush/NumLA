@@ -31,6 +31,10 @@ int main() {
     auto diff = A - A; // Subtracting A from itself
     std::cout << "Difference of A - A:\n" << diff << "\n";
 
+    // Scalar multiplication of a matrix
+    auto scaled_A = 2.0 * A; // Scale matrix A by 2
+    std::cout << "Scaled Matrix (2.0 * A):\n" << scaled_A << "\n";
+
     // Multiply them (Result will be 2x2)
     auto C = A * B;
     std::cout << "Result C (A * B):\n" << C << "\n";

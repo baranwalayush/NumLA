@@ -127,4 +127,21 @@ namespace NumLA {
         return result;
     }
 
+    // Scalar Multiplication (Matrix * Scalar)
+    template<typename T, std::size_t Rows, std::size_t Cols>
+    Matrix<T, Rows, Cols> operator*(const T& scalar, const Matrix<T, Rows, Cols>& matrix) {
+        Matrix<T, Rows, Cols> result;
+        for (std::size_t i = 0; i < Rows; ++i) {
+            for (std::size_t j = 0; j < Cols; ++j) {
+                result(i, j) = matrix(i, j) * scalar;
+            }
+        }
+        return result;
+    }
+
+    template<typename T, std::size_t Rows, std::size_t Cols>
+    Matrix<T, Rows, Cols> operator*(const Matrix<T, Rows, Cols>& matrix, const T& scalar) {
+        return scalar * matrix;
+    }
+
 }
