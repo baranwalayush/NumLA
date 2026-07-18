@@ -142,4 +142,22 @@ TEST_CASE("Matrix Mathematical Operators", "[matrix][math][unit]") {
         REQUIRE(scaled_A2(1, 0) == 9.0);
         REQUIRE(scaled_A2(1, 1) == 12.0);
     }
+
+    SECTION("Matrix Transpose produces correct results") {
+        NumLA::Matrix<double, 2, 3> A = {{
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0}
+        }};
+
+        auto At = NumLA::transpose(A);
+
+        REQUIRE(At.rows() == 3);
+        REQUIRE(At.cols() == 2);
+        REQUIRE(At(0, 0) == 1.0);
+        REQUIRE(At(0, 1) == 4.0);
+        REQUIRE(At(1, 0) == 2.0);
+        REQUIRE(At(1, 1) == 5.0);
+        REQUIRE(At(2, 0) == 3.0);
+        REQUIRE(At(2, 1) == 6.0);
+    }
 }
